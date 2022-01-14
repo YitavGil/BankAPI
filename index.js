@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyparser = require('body-parser');
 
-const {loadUsers, addUser} = require('./utils')
+const {loadUsers, addUser, deleteUser, depositCash, transferCash, getSingleUser} = require('./utils')
 const app = express();
 app.use(express.json());
 
@@ -15,6 +15,15 @@ app.get('/users',(req, res) => {
     
 })
 
+app.get('/users/:id', (req, res) => {
+    try{
+        res.status(200).send(getSingleUser(req.params.id))
+    }
+    catch(e){
+        res.status(400).send({error: e.message})
+    }
+})
+
 app.post('/users', (req, res) =>{
     try{
         res.status(201).send(addUser(req.body))
@@ -24,7 +33,38 @@ app.post('/users', (req, res) =>{
     }
 })
 
+app.delete('/users/:id', (req, res) =>{
+    const userId = req.params.id;
+    try {
+        res.status(200).send(deleteUser(userId))
+    }
+    catch(e){
+        res.status(404).send({error:e.message})
+    }
 
+})
+
+app.patch('/users/:id/deposit', (req, res) => {
+    const {id} = req.params;
+    const {cashAmount} = req.body;
+    try{
+        res.status(200).send(depositCash(id, cashAmount))
+    }
+    catch(e) {
+        res.status(404).send({error:e.message})
+    }
+})
+
+app.patch('/users/:id/transfer',(req, res) =>{
+    const {id} = req.params;
+    const {cashAmount, targetId} = req.body;
+    try{
+        res.status(200).send(transferCash(id, cashAmount, targetId))
+    }
+    catch(e){
+        res.status(404).send({error:e.message})
+    }
+})
 
 
 
