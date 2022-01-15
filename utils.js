@@ -73,6 +73,16 @@ const depositCash = (userId, cashAmount) => {
     saveUsers(users)
 }
 
+const withdrawCash = (userId, cashAmount) => {
+    const users = loadUsers();
+    const index = getUserIndex(userId)
+    if(index === -1){
+        throw Error('User not found'); 
+    }
+    users[index].cash -= cashAmount
+    saveUsers(users)
+}
+
 const transferCash = (userId, cashAmount, targetId) => {
     const users = loadUsers();
     const index = getUserIndex(userId);
@@ -107,5 +117,6 @@ module.exports = {
     deleteUser,
     depositCash,
     transferCash,
-    getSingleUser
+    getSingleUser,
+    withdrawCash
 }

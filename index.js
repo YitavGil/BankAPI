@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyparser = require('body-parser');
 
-const {loadUsers, addUser, deleteUser, depositCash, transferCash, getSingleUser} = require('./utils')
+const {loadUsers, addUser, deleteUser, depositCash, transferCash, getSingleUser, withdrawCash} = require('./utils')
 const app = express();
 app.use(express.json());
 
@@ -49,6 +49,17 @@ app.patch('/users/:id/deposit', (req, res) => {
     const {cashAmount} = req.body;
     try{
         res.status(200).send(depositCash(id, cashAmount))
+    }
+    catch(e) {
+        res.status(404).send({error:e.message})
+    }
+})
+
+app.patch('/users/:id/withdraw', (req, res) => {
+    const {id} = req.params;
+    const {cashAmount} = req.body;
+    try{
+        res.status(200).send(withdrawCash(id, cashAmount))
     }
     catch(e) {
         res.status(404).send({error:e.message})
